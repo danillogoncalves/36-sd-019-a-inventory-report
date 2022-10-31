@@ -19,6 +19,13 @@ class Inventory:
         with open(path, mode="r", encoding="utf-8") as file:
             return xmltodict.parse(file.read())["dataset"]["record"]
 
+    def __type_report_switch(type_report, product_list):
+        if type_report == "simples":
+            return SimpleReport.generate(product_list)
+
+        if type_report == "completo":
+            return CompleteReport.generate(product_list)
+
     @classmethod
     def import_data(cls, path: str, type_report: str):
         if path.endswith(".csv"):
@@ -28,8 +35,4 @@ class Inventory:
         if path.endswith(".xml"):
             product_list = cls.__read_xml(path)
 
-        if type_report == "simples":
-            return SimpleReport.generate(product_list)
-
-        if type_report == "completo":
-            return CompleteReport.generate(product_list)
+        return cls.__type_report_switch(type_report, product_list)
