@@ -1,14 +1,25 @@
 import csv
+import json
 from inventory_report.reports.simple_report import SimpleReport
 from inventory_report.reports.complete_report import CompleteReport
 
 
 class Inventory:
-    @classmethod
-    def import_data(cls, path_csv: str, type_report: str):
-        with open(path_csv, mode="r", encoding="utf-8") as file:
+    def __read_csv(path: str):
+        with open(path, mode="r", encoding="utf-8") as file:
             file_reader = csv.DictReader(file)
-            product_list = list(file_reader)
+            return list(file_reader)
+
+    def __read_json(path: str):
+        with open(path, mode="r", encoding="utf-8") as file:
+            return json.loads(file.read())
+
+    @classmethod
+    def import_data(cls, path: str, type_report: str):
+        if path.endswith(".csv"):
+            product_list = cls.__read_csv(path)
+        if path.endswith(".json"):
+            product_list = cls.__read_json(path)
 
         if type_report == "simples":
             return SimpleReport.generate(product_list)
